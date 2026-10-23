@@ -1,0 +1,46 @@
+# Creates a GitHub release whenever a version tag (like v0.1.2) is pushed.
+# The release notes are that version's entry in CHANGELOG.md.
+#
+# It can also be run by hand from the Actions tab, for tags that were pushed
+# before this workflow existed.
+
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Existing tag to release, for example v0.1.1"
+        required: true
+
+permissions:
+  contents: write  # needed to create the release
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    env:
+      TAG: ${{ inputs.tag || github.ref_name }}
+    steps:
+      - name: Check out the tagged commit
+        uses: actions/checkout@v5
+        with:
+          ref: ${{ env.TAG }}
+
+      - name: Read this version's notes from CHANGELOG.md
+        run: |
+          version="${TAG#v}"   # v0.1.1 -> 0.1.1
+          .github/scripts/changelog-section.sh "$version" > release-notes.md
+          cat release-notes.md
+
+      - name: Create the GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$TAG" \
+            --title "Better Watch Later ${TAG#v}" \
+            --notes-file release-notes.md \
+            --verify-tag
