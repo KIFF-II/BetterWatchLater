@@ -27,6 +27,7 @@ All of this only appears on the Watch Later page (`youtube.com/playlist?list=WL`
 - `src/api.js` calls the same internal YouTube endpoints the website itself uses when you remove a video from the three-dot menu.
 - `src/content.js` adds the buttons and the panel, and keeps up with YouTube's page changes.
 - `src/styles.css` uses YouTube's own colours, so it follows light and dark mode.
+- `icons/icon.svg` is the icon's source. Chrome can't use SVG icons, so the manifest points at PNG copies in `icons/`. If you change the SVG, export it again at 16, 32, 48, 96 and 128 pixels with the same file names.
 
 These endpoints are not an official, documented API. If YouTube changes them, removing videos may stop working until the extension is updated. When that happens you'll see an error message; it won't remove anything silently.
 
@@ -45,7 +46,7 @@ To make a release:
    git push origin main v0.1.2
    ```
 
-GitHub then creates a release titled "Better Watch Later 0.1.2", uses that version's changelog entry as the release notes, and attaches `better-watch-later-0.1.2.zip`, ready to upload to addons.mozilla.org. The zip only holds `manifest.json`, `src/` and `LICENSE.md`.
+GitHub then creates a release titled "Better Watch Later 0.1.2", uses that version's changelog entry as the release notes, and attaches `better-watch-later-0.1.2.zip`, ready to upload to addons.mozilla.org. The zip only holds `manifest.json`, `src/`, `icons/` and `LICENSE.md`.
 
 The release stops with an error in the Actions tab if `CHANGELOG.md` has no entry for the version, or if the `manifest.json` version doesn't match the tag.
 

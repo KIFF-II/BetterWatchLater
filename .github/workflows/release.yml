@@ -51,12 +51,18 @@ jobs:
 
       # Built straight from the tagged commit, not the checked-out folder, so a
       # hand run for an old tag still packages that version's code.
-      # Only the files the browser needs go in; .git, .github, README and
-      # CHANGELOG stay out.
+      # Only the files the browser needs go in (the icon's SVG source rides along
+      # in icons/, which is harmless); .git, .github, README and CHANGELOG stay out.
       - name: Build the extension zip
         run: |
-          git archive --format=zip --output "better-watch-later-${TAG#v}.zip" "$TAG" \
-            manifest.json src LICENSE.md
+          paths=""
+          for path in manifest.json src icons LICENSE.md; do
+            # Older tags don't have everything (icons/ arrived after 0.1.1).
+            if git cat-file -e "$TAG:$path" 2>/dev/null; then
+              paths="$paths $path"
+            fi
+          done
+          git archive --format=zip --output "better-watch-later-${TAG#v}.zip" "$TAG" $paths
           unzip -l "better-watch-later-${TAG#v}.zip"
 
       - name: Create the GitHub release
