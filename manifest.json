@@ -1,0 +1,25 @@
+{
+  "manifest_version": 3,
+  "name": "Better Watch Later",
+  "version": "0.1.0",
+  "description": "One-click remove, bulk remove watched videos, and shuffle for YouTube's Watch Later playlist.",
+  "content_scripts": [
+    {
+      "matches": ["https://www.youtube.com/*"],
+      "css": ["src/styles.css"],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": ["https://www.youtube.com/*"],
+      "js": ["src/api.js", "src/content.js"],
+      "world": "MAIN",
+      "run_at": "document_idle"
+    }
+  ],
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "betterwatchlater@kiff-ii",
+      "strict_min_version": "128.0"
+    }
+  }
+}
