@@ -25,10 +25,10 @@ jobs:
     env:
       TAG: ${{ inputs.tag || github.ref_name }}
     steps:
-      - name: Check out the tagged commit
+      # On a tag push this is the tagged commit. On a hand run it's the branch
+      # you picked (normally main), which has the changelog for every version.
+      - name: Check out the code
         uses: actions/checkout@v5
-        with:
-          ref: ${{ env.TAG }}
 
       - name: Read this version's notes from CHANGELOG.md
         run: |
