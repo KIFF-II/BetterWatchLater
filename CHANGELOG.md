@@ -4,11 +4,12 @@ All notable changes to Better Watch Later are listed here, newest first.
 
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and version numbers follow [Semantic Versioning](https://semver.org/).
 
-## [Unreleased]
+## [0.1.2] - 2026-10-23
 
 ### Added
 
 - Extension icon: a clock with a tick, in `icons/`. The SVG is the source; the PNGs are what browsers use.
+- GitHub releases are now created automatically from version tags, with the changelog entry as the release notes and a zip of the extension attached.
 
 ## [0.1.1] - 2026-10-23
 
@@ -30,5 +31,6 @@ First release, submitted to addons.mozilla.org.
 - Firefox data collection declaration (`none`), required by addons.mozilla.org.
 - Link to the source code on the add-on's page.
 
+[0.1.2]: https://github.com/KIFF-II/BetterWatchLater/compare/v0.1.1...v0.1.2
 [0.1.1]: https://github.com/KIFF-II/BetterWatchLater/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/KIFF-II/BetterWatchLater/releases/tag/v0.1.0
