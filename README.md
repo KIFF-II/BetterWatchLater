@@ -30,6 +30,29 @@ All of this only appears on the Watch Later page (`youtube.com/playlist?list=WL`
 
 These endpoints are not an official, documented API. If YouTube changes them, removing videos may stop working until the extension is updated. When that happens you'll see an error message; it won't remove anything silently.
 
+## Release management
+
+Releases are made by GitHub Actions (`.github/workflows/release.yml`) whenever a version tag is pushed.
+
+To make a release:
+
+1. Add an entry for the new version at the top of `CHANGELOG.md`, with a heading like `## [0.1.2] - 2026-11-01`.
+2. Change `"version"` in `manifest.json` to the same number.
+3. Commit, then tag and push:
+
+   ```
+   git tag -a v0.1.2 -m "Better Watch Later 0.1.2"
+   git push origin main v0.1.2
+   ```
+
+GitHub then creates a release titled "Better Watch Later 0.1.2", uses that version's changelog entry as the release notes, and attaches `better-watch-later-0.1.2.zip`, ready to upload to addons.mozilla.org. The zip only holds `manifest.json`, `src/` and `LICENSE.md`.
+
+The release stops with an error in the Actions tab if `CHANGELOG.md` has no entry for the version, or if the `manifest.json` version doesn't match the tag.
+
+To make a release for a tag that already exists, go to **Actions → Release → Run workflow**, keep the branch on `main` and enter the tag (for example `v0.1.1`).
+
+To preview the release notes on your own machine, run `.github/scripts/changelog-section.sh 0.1.2`.
+
 ## Built with AI
 
 This extension was written by **Claude Opus 5.5**, an AI model made by [Anthropic](https://www.anthropic.com), working through **Claude Code**. We described the problem and the features we wanted, along with screenshots of the Watch Later page. Claude wrote the code and tested it against a mocked copy of the page. We edited the extension for suitability and tested it against the live YouTube API.

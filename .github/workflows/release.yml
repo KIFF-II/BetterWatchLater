@@ -1,5 +1,6 @@
 # Creates a GitHub release whenever a version tag (like v0.1.2) is pushed.
-# The release notes are that version's entry in CHANGELOG.md.
+# The release notes are that version's entry in CHANGELOG.md, and the
+# extension is attached as a zip ready to upload to addons.mozilla.org.
 #
 # It can also be run by hand from the Actions tab, for tags that were pushed
 # before this workflow existed.
@@ -29,6 +30,8 @@ jobs:
       # you picked (normally main), which has the changelog for every version.
       - name: Check out the code
         uses: actions/checkout@v5
+        with:
+          fetch-depth: 0  # full history and tags, so we can read files from the tag
 
       - name: Read this version's notes from CHANGELOG.md
         run: |
@@ -36,11 +39,31 @@ jobs:
           .github/scripts/changelog-section.sh "$version" > release-notes.md
           cat release-notes.md
 
+      # Mozilla rejects an upload whose version it has seen before, so catch a
+      # forgotten manifest bump here rather than at upload time.
+      - name: Check manifest.json has the same version as the tag
+        run: |
+          manifest_version=$(git show "$TAG:manifest.json" | jq -r .version)
+          if [ "$manifest_version" != "${TAG#v}" ]; then
+            echo "Tag is $TAG but manifest.json says $manifest_version." >&2
+            exit 1
+          fi
+
+      # Built straight from the tagged commit, not the checked-out folder, so a
+      # hand run for an old tag still packages that version's code.
+      # Only the files the browser needs go in; .git, .github, README and
+      # CHANGELOG stay out.
+      - name: Build the extension zip
+        run: |
+          git archive --format=zip --output "better-watch-later-${TAG#v}.zip" "$TAG" \
+            manifest.json src LICENSE.md
+          unzip -l "better-watch-later-${TAG#v}.zip"
+
       - name: Create the GitHub release
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release create "$TAG" \
+          gh release create "$TAG" "better-watch-later-${TAG#v}.zip" \
             --title "Better Watch Later ${TAG#v}" \
             --notes-file release-notes.md \
             --verify-tag
