@@ -79,34 +79,45 @@
     delete row.dataset.wltRemovedId;
   }
 
-  async function removeRow(row, button) {
+  // The row disappears straight away and YouTube is told in the background.
+  // YouTube takes a second or two to answer, so waiting for it made every
+  // click feel sluggish. If YouTube says no, the row comes back.
+  function removeRow(row) {
     const videoId = videoIdOf(row);
     if (!videoId) return showToast("Couldn't work out which video this is.");
 
     const title = titleOf(row);
-    button.disabled = true;
+    hideRow(row, videoId);
 
-    try {
-      await WatchLaterApi.removeVideos([videoId]);
-      hideRow(row, videoId);
-      showToast(`Removed "${title}"`, {
-        label: "Undo",
-        run: () => undoRemove(row, videoId, title),
-      });
-    } catch (error) {
-      showToast(`Couldn't remove: ${error.message}`);
-    } finally {
-      button.disabled = false;
-    }
+    const removal = WatchLaterApi.removeVideos([videoId]);
+    showToast(`Removed "${title}"`, {
+      label: "Undo",
+      run: () => undoRemove(row, videoId, title, removal),
+    });
+
+    removal.catch(error => {
+      unhideRow(row);
+      showToast(`Couldn't remove "${title}": ${error.message}`);
+    });
   }
 
-  async function undoRemove(row, videoId, title) {
+  async function undoRemove(row, videoId, title, removal) {
+    unhideRow(row);
+
+    // If the removal is still on its way, let it land first. Otherwise YouTube
+    // could get the "add" before the "remove" and the video would end up gone.
+    try {
+      await removal;
+    } catch {
+      return; // The removal failed, so there's nothing to undo.
+    }
+
     try {
       await WatchLaterApi.addVideos([videoId]);
-      unhideRow(row);
       // YouTube treats this as a fresh add, so after a reload it'll be at the top.
       showToast(`Put "${title}" back`);
     } catch (error) {
+      hideRow(row, videoId);
       showToast(`Couldn't undo: ${error.message}`);
     }
   }
@@ -125,7 +136,7 @@
       // Stop the click from reaching YouTube and opening the video.
       event.preventDefault();
       event.stopPropagation();
-      removeRow(row, button);
+      removeRow(row);
     });
 
     const menu = row.querySelector("#menu");

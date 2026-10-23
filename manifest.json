@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Better Watch Later",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "One-click remove, bulk remove watched videos, and shuffle for YouTube's Watch Later playlist. Open source (GPL-3.0).",
   "homepage_url": "https://github.com/KIFF-II/BetterWatchLater",
   "content_scripts": [
