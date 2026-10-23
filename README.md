@@ -4,7 +4,9 @@ A small Chrome and Firefox extension that makes YouTube's Watch Later page easie
 
 ## Why it exists
 
-I have 4,900 to 5,000 videos on my Watch Later list on YouTube at all times. I want to manage it well, but YouTube's default UI was missing features I wanted. The worst part is that "Remove from Watch Later" is hidden behind a three-dot menu on every single video. So I prompted an AI to build this.
+I have 4,900 to 5,000 videos on my Watch Later list on YouTube at all times. I want to manage it well, but YouTube's default UI was missing features I wanted. The worst part is that "Remove from Watch Later" is hidden behind a three-dot menu on every single video. We've been meaning to build this extension for many years, but never got round to it. 
+
+Now it exists and we use it every day. That's Good!
 
 ## Features
 
@@ -30,7 +32,7 @@ These endpoints are not an official, documented API. If YouTube changes them, re
 
 ## Built with AI
 
-This extension was written by **Claude**, an AI model made by [Anthropic](https://www.anthropic.com), working through **Claude Code**, Anthropic's coding tool. I described the problem and the features I wanted, along with screenshots of the Watch Later page. Claude wrote the code and tested it against a mocked copy of the page. Claude could not sign in to YouTube, so testing against the real site is done by hand.
+This extension was written by **Claude Opus 5.5**, an AI model made by [Anthropic](https://www.anthropic.com), working through **Claude Code**. We described the problem and the features we wanted, along with screenshots of the Watch Later page. Claude wrote the code and tested it against a mocked copy of the page. We edited the extension for suitability and tested it against the live YouTube API.
 
 ## License
 
